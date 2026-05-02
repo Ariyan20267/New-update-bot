@@ -1,12 +1,12 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-# ══════════════════════════════════════════════
-#        ARIYAN FREE FIRE - TERMUX SETUP
-#        একদম নতুন ফোনে A to Z সেটআপ
-# ══════════════════════════════════════════════
+# ============================================================
+#         ARIYAN FREE FIRE - TERMUX AUTO SETUP
+# ============================================================
 
 RESET="\033[0m"
 BOLD="\033[1m"
+DIM="\033[2m"
 GREEN="\033[92m"
 YELLOW="\033[93m"
 CYAN="\033[96m"
@@ -15,275 +15,326 @@ BLUE="\033[94m"
 MAGENTA="\033[95m"
 WHITE="\033[97m"
 ORANGE="\033[38;5;214m"
-DIM="\033[2m"
 
-ok()   { echo -e "${GREEN}${BOLD}  [✔] $1${RESET}"; }
-info() { echo -e "${CYAN}${BOLD}  [*] $1${RESET}"; }
-warn() { echo -e "${YELLOW}${BOLD}  [!] $1${RESET}"; }
-err()  { echo -e "${RED}${BOLD}  [✗] $1${RESET}"; }
-line() { echo -e "${BLUE}${BOLD}  ══════════════════════════════════════${RESET}"; }
-
-# ══════════════════════════════════════════════
-# FREE FIRE লোগো (main.py থেকে হুবহু)
-# ══════════════════════════════════════════════
-FF_LINES=(
-    "            ⣀⣠⡤                        "
-    "   ⢀⣤⡶⠁⣠⣴⣾⠟⠋⠁                          "
-    "  ⢀⣴⣿⣿⣴⣿⠿⠋⣁⣀⣀⣀⣀⣀⡀                      "
-    "  ⣰⣿⣿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣄⡀                "
-    "⣠⣾⣿⡿⠟⠋⠉⠀⣀⣀⣨⣭⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣴⠂"
-    "⠈⠉⠁⠀⣀⣴⣾⣿⣿⡿⠟⠛⠉⠉⠉⠉⠛⠻⠿⠿⠿⠿⠿⠿⠟⠋⠁          "
-    "   ⢀⣴⣿⣿⣿⡿⠁⢀⣀⣤⣤⣤⣤⣀⣀                      "
-    "   ⣾⣿⣿⣿⡿⠁⢀⣴⣿⠋⠉⠉⠉⠉⠛⣿⣿⣶⣤⣤⣤⣤⣶⠖            "
-    "  ⢸⣿⣿⣿⣿⡇⢀⣿⣿⣇⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⡿⠃              "
-    "  ⠸⣿⣿⣿⣿⡇⠈⢿⣿⣿⠇⠀⠀⠀⠀⢠⣿⣿⣿⠟⠋                "
-    "   ⢿⣿⣿⣿⣷⡀⠀⠉⠉⠀⠀⠀⢀⣾⣿⣿⡏                    "
-    "    ⠙⢿⣿⣿⣷⣄⡀⠀⠀⣀⣴⣿⣿⣿⣋⣠⡤⠄                  "
-    "       ⠈⠙⠛⠛⠿⠿⠿⠿⠿⠟⠛⠛⠛⠉⠁                   "
+# RGB color cycle array
+RGB=(
+    "\033[38;5;196m"  # red
+    "\033[38;5;202m"  # orange-red
+    "\033[38;5;208m"  # orange
+    "\033[38;5;214m"  # yellow-orange
+    "\033[38;5;220m"  # yellow
+    "\033[38;5;226m"  # bright yellow
+    "\033[38;5;154m"  # yellow-green
+    "\033[38;5;118m"  # green
+    "\033[38;5;51m"   # cyan
+    "\033[38;5;45m"   # sky blue
+    "\033[38;5;21m"   # blue
+    "\033[38;5;57m"   # indigo
+    "\033[38;5;93m"   # violet
+    "\033[38;5;201m"  # magenta
+    "\033[38;5;198m"  # pink-red
 )
+RGB_LEN=15
 
-FLASH_C=(
+# Flash colors for FF logo
+FLASH=(
     "$RED" "$ORANGE" "$YELLOW" "$WHITE" "$ORANGE"
     "$RED" "$YELLOW" "$ORANGE" "$WHITE" "$RED"
     "$YELLOW" "$ORANGE" "$RED"
 )
 
-# FF লোগো প্রিন্ট (offset ও dim মোড)
-print_ff() {
+# ============================================================
+# FREE FIRE LOGO
+# ============================================================
+FF_LINES=(
+    "            \u2820\u28a0\u2884\u28e4                        "
+    "   \u2820\u28a4\u2876\u2801\u28a0\u28b4\u28be\u281f\u280b\u2801                          "
+    "  \u2820\u28b4\u28bf\u28bf\u28b4\u28bf\u281f\u280b\u2801\u2820\u2800\u2800\u2800\u2800\u2800\u2805                      "
+    "  \u2830\u28bf\u28ff\u28ff\u28ff\u28ff\u28bf\u28be\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28bf\u28b6\u28e4\u2805                "
+    "\u28a0\u28be\u28ff\u281f\u281f\u280b\u2801\u2800\u2820\u2800\u28a8\u28ad\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u28bf\u28a4\u28a4\u28a4\u28a4\u28b4\u2802"
+    "\u2801\u2809\u2801\u2800\u2820\u28b4\u28be\u28ff\u28ff\u281f\u281f\u280b\u2809\u2801\u2809\u2809\u280b\u281b\u28ff\u28ff\u28ff\u28ff\u28ff\u28ff\u281f\u280b\u2801          "
+    "   \u2820\u28b4\u28ff\u28ff\u28ff\u281f\u2801\u2820\u2800\u28a4\u28a4\u28a4\u28a4\u2800\u2800                      "
+    "   \u28be\u28ff\u28ff\u28ff\u281f\u2801\u2820\u28b4\u28ff\u280b\u2809\u2809\u2809\u2809\u280b\u28ff\u28ff\u28b6\u28a4\u28a4\u28a4\u28a4\u28b6\u2816            "
+    "  \u2838\u28ff\u28ff\u28ff\u28ff\u2807\u2820\u28ff\u28ff\u2807\u2800\u2800\u2800\u2800\u2800\u2818\u28ff\u28ff\u28ff\u28ff\u28ff\u281f\u2803              "
+    "  \u2818\u28ff\u28ff\u28ff\u28ff\u2807\u2808\u28ff\u28ff\u28ff\u2807\u2800\u2800\u2800\u2800\u2820\u28ff\u28ff\u28ff\u281f\u280b                "
+    "   \u28ff\u28ff\u28ff\u28ff\u28bf\u2805\u2800\u2809\u2809\u2800\u2800\u2800\u2820\u28be\u28ff\u28ff\u2807                    "
+    "    \u2809\u28ff\u28ff\u28ff\u28bf\u2824\u2805\u2800\u2800\u2820\u28b4\u28ff\u28ff\u28ff\u280b\u28a0\u2804\u2816                  "
+    "       \u2808\u2809\u280b\u280b\u281f\u281f\u281f\u281f\u281f\u281f\u280b\u280b\u280b\u2809\u2801                   "
+)
+
+# ARIYAN text
+print_ariyan() {
+    local c="${RGB[$((RANDOM % RGB_LEN))]}"
+    echo -e "  ${c}${BOLD} █████╗ ██████╗ ██╗██╗   ██╗ █████╗ ███╗  ██╗${RESET}"
+}
+
+# Print FF logo with color offset
+print_ff_logo() {
     local offset=${1:-0}
     local dim=${2:-0}
-    echo -e "${CYAN}${BOLD}  ░█████╗░██████╗░██╗██╗░██╗░░█████╗░███╗░██╗${RESET}"
+    print_ariyan
     echo ""
-    local i
     for i in $(seq 0 12); do
         local ci=$(( (i + offset) % 13 ))
-        local c="${FLASH_C[$ci]}"
+        local c="${FLASH[$ci]}"
         if [ "$dim" -eq 1 ] && [ $(( i % 2 )) -ne 0 ]; then
             echo -e "  ${RED}${DIM}${FF_LINES[$i]}${RESET}"
         else
             echo -e "  ${c}${BOLD}${FF_LINES[$i]}${RESET}"
         fi
     done
-    echo ""
 }
 
-# ══════════════════════════════════════════════
-# লাইটিং অ্যানিমেশন ফাংশন
-# মডিউল ইন্সটলের সময় উপরে FF লোগো ফ্ল্যাশ করবে
-# নিচে ইন্সটল স্ট্যাটাস দেখাবে
-# ══════════════════════════════════════════════
+# ============================================================
+# ANIMATION ENGINE
+# FF logo blinks on top, RGB status below
+# ============================================================
 ANIM_PID=""
+LOGO_ROWS=16   # ariyan(1) + blank(1) + ff_logo(13) + blank(1)
+STATUS_ROW=$((LOGO_ROWS + 2))
 
 start_anim() {
-    touch /tmp/_ff_anim_on
+    touch /tmp/_ff_on
     (
         local offset=0
-        while [ -f /tmp/_ff_anim_on ]; do
+        while [ -f /tmp/_ff_on ]; do
             tput cup 0 0 2>/dev/null
             local mode=$(( offset % 3 ))
-            if [ "$mode" -eq 2 ]; then
-                print_ff "$offset" 1
-            else
-                print_ff "$offset" 0
+            if   [ "$mode" -eq 0 ]; then print_ff_logo "$offset" 0
+            elif [ "$mode" -eq 1 ]; then print_ff_logo "$offset" 0
+            else                         print_ff_logo "$offset" 1
             fi
-            offset=$(( offset + 1 ))
-            sleep 0.16
+            offset=$(( (offset + 1) % 39 ))
+            sleep 0.15
         done
     ) &
     ANIM_PID=$!
 }
 
 stop_anim() {
-    rm -f /tmp/_ff_anim_on 2>/dev/null
+    rm -f /tmp/_ff_on 2>/dev/null
     [ -n "$ANIM_PID" ] && kill "$ANIM_PID" 2>/dev/null && wait "$ANIM_PID" 2>/dev/null
     ANIM_PID=""
 }
 
-# লগ লাইন: অ্যানিমেশনের নিচে (সারি 18 থেকে)
-STATUS_ROW=18
-print_status() {
-    tput cup $STATUS_ROW 0 2>/dev/null
-    tput el 2>/dev/null
-    echo -ne "  $1"
+# RGB progress bar
+rgb_bar() {
+    local filled=$1
+    local total=$2
+    local bar=""
+    for i in $(seq 1 $total); do
+        local ci=$(( (i + filled) % RGB_LEN ))
+        local c="${RGB[$ci]}"
+        if [ $i -le $filled ]; then
+            bar="${bar}${c}${BOLD}█${RESET}"
+        else
+            bar="${bar}${DIM}░${RESET}"
+        fi
+    done
+    echo -ne "$bar"
 }
 
-# ══════════════════════════════════════════════
-# ধাপ ১: স্টোরেজ পারমিশন
-# ══════════════════════════════════════════════
+# Print status line below logo
+print_status() {
+    local idx=$1
+    local total=$2
+    local name=$3
+    local state=$4   # installing | ok | fail
+
+    tput cup $STATUS_ROW 0 2>/dev/null
+    tput el 2>/dev/null
+    tput cup $((STATUS_ROW+1)) 0 2>/dev/null
+    tput el 2>/dev/null
+    tput cup $((STATUS_ROW+2)) 0 2>/dev/null
+    tput el 2>/dev/null
+
+    tput cup $STATUS_ROW 0 2>/dev/null
+    local pct=$(( idx * 100 / total ))
+    local filled=$(( idx * 30 / total ))
+
+    # RGB progress bar
+    echo -ne "  "
+    rgb_bar $filled 30
+    echo ""
+
+    tput cup $((STATUS_ROW+1)) 0 2>/dev/null
+    local ci=$(( idx % RGB_LEN ))
+    local c="${RGB[$ci]}"
+
+    if   [ "$state" = "ok" ];          then echo -e "  ${GREEN}${BOLD}  [✔] $name${RESET}  ($pct%)"
+    elif [ "$state" = "fail" ];        then echo -e "  ${RED}${BOLD}    [✗] $name FAILED${RESET}  ($pct%)"
+    else                                    echo -e "  ${c}${BOLD}  [*] Installing $name...${RESET}  ($pct%)"
+    fi
+}
+
+# ============================================================
+# STEP 1: Storage permission
+# ============================================================
 clear
-info "স্টোরেজ পারমিশন চেক করা হচ্ছে..."
+echo -e "${CYAN}${BOLD}  [*] Checking storage permission...${RESET}"
 if [ ! -d ~/storage ]; then
-    warn "পারমিশন দেওয়া হচ্ছে..."
+    echo -e "${YELLOW}${BOLD}  [!] Requesting storage permission...${RESET}"
     termux-setup-storage
     sleep 2
 fi
-ok "স্টোরেজ পারমিশন ঠিক আছে"
+echo -e "${GREEN}${BOLD}  [✔] Storage OK${RESET}"
 echo ""
 
-# ══════════════════════════════════════════════
-# ধাপ ২: pkg আপডেট
-# ══════════════════════════════════════════════
-line
-info "Termux প্যাকেজ আপডেট করা হচ্ছে..."
-line
-pkg update -y 2>/dev/null || warn "pkg update এ সমস্যা, চালিয়ে যাচ্ছি..."
+# ============================================================
+# STEP 2: pkg update
+# ============================================================
+echo -e "${CYAN}${BOLD}  [*] Updating packages...${RESET}"
+pkg update -y 2>/dev/null || echo -e "${YELLOW}${BOLD}  [!] pkg update issue, continuing...${RESET}"
 pkg upgrade -y 2>/dev/null
-ok "প্যাকেজ আপডেট সম্পন্ন"
+echo -e "${GREEN}${BOLD}  [✔] Packages updated${RESET}"
 echo ""
 
-# ══════════════════════════════════════════════
-# ধাপ ৩: Python ইন্সটল
-# ══════════════════════════════════════════════
-line
-info "Python চেক করা হচ্ছে..."
+# ============================================================
+# STEP 3: Python
+# ============================================================
+echo -e "${CYAN}${BOLD}  [*] Checking Python...${RESET}"
 if command -v python3 &>/dev/null; then
-    ok "Python আছে: $(python3 --version)"
+    echo -e "${GREEN}${BOLD}  [✔] Python found: $(python3 --version)${RESET}"
 else
-    warn "Python নেই, ইন্সটল হচ্ছে..."
+    echo -e "${YELLOW}${BOLD}  [!] Installing Python...${RESET}"
     pkg install python -y
-    command -v python3 &>/dev/null || { err "Python ইন্সটল ব্যর্থ!"; exit 1; }
-    ok "Python ইন্সটল সফল: $(python3 --version)"
+    command -v python3 &>/dev/null || { echo -e "${RED}${BOLD}  [✗] Python install failed!${RESET}"; exit 1; }
+    echo -e "${GREEN}${BOLD}  [✔] Python installed: $(python3 --version)${RESET}"
 fi
 echo ""
 
-# ══════════════════════════════════════════════
-# ধাপ ৪: pip আপগ্রেড
-# ══════════════════════════════════════════════
-info "pip আপগ্রেড হচ্ছে..."
+# ============================================================
+# STEP 4: pip upgrade
+# ============================================================
+echo -e "${CYAN}${BOLD}  [*] Upgrading pip...${RESET}"
 python3 -m pip install --upgrade pip -q 2>/dev/null
-ok "pip আপগ্রেড সম্পন্ন"
+echo -e "${GREEN}${BOLD}  [✔] pip upgraded${RESET}"
 echo ""
 
-# ══════════════════════════════════════════════
-# ধাপ ৫: Git ইন্সটল
-# ══════════════════════════════════════════════
-line
-info "Git চেক করা হচ্ছে..."
+# ============================================================
+# STEP 5: Git
+# ============================================================
+echo -e "${CYAN}${BOLD}  [*] Checking Git...${RESET}"
 if command -v git &>/dev/null; then
-    ok "Git আছে: $(git --version)"
+    echo -e "${GREEN}${BOLD}  [✔] Git found: $(git --version)${RESET}"
 else
     pkg install git -y
-    command -v git &>/dev/null || { err "Git ইন্সটল ব্যর্থ!"; exit 1; }
-    ok "Git ইন্সটল সফল"
+    command -v git &>/dev/null || { echo -e "${RED}${BOLD}  [✗] Git install failed!${RESET}"; exit 1; }
+    echo -e "${GREEN}${BOLD}  [✔] Git installed${RESET}"
 fi
 echo ""
 
-# ══════════════════════════════════════════════
-# ধাপ ৬–৭: মডিউল ইন্সটল — FF লোগো লাইটিং সহ
-# ══════════════════════════════════════════════
+# ============================================================
+# STEP 6-7: MODULE INSTALL — FF LOGO BLINKING + RGB PROGRESS
+# ============================================================
 clear
-# অ্যানিমেশন শুরু
+# reserve space for logo + status
+for i in $(seq 1 $((STATUS_ROW + 4))); do echo ""; done
+
+# start FF logo animation
 start_anim
 sleep 0.4
 
 FAILED=()
-TOTAL=11
+MODULES=(
+    "psutil|pkg"
+    "requests|pip"
+    "PyJWT|pip"
+    "urllib3|pip"
+    "aiohttp|pip"
+    "flask|pip"
+    "pycryptodome|pip"
+    "protobuf|pip"
+    "google-play-scraper|pip"
+    "pytz|pip"
+    "pyfiglet|pip"
+)
+TOTAL=${#MODULES[@]}
 DONE=0
 
-install_mod_pip() {
-    local name="$1"
+for entry in "${MODULES[@]}"; do
+    name="${entry%%|*}"
+    method="${entry##*|}"
     DONE=$(( DONE + 1 ))
-    print_status "${CYAN}${BOLD}[$DONE/$TOTAL] $name ইন্সটল হচ্ছে...${RESET}"
-    python3 -m pip install "$name" -q &>/dev/null
-    if [ $? -eq 0 ]; then
-        print_status "${GREEN}${BOLD}[$DONE/$TOTAL] ✔ $name${RESET}"
+
+    print_status "$DONE" "$TOTAL" "$name" "installing"
+
+    if [ "$method" = "pkg" ]; then
+        pkg install "python-${name}" -y &>/dev/null
+        if [ $? -ne 0 ]; then
+            python3 -m pip install "$name" -q &>/dev/null
+        fi
     else
-        print_status "${RED}${BOLD}[$DONE/$TOTAL] ✗ $name ব্যর্থ!${RESET}"
+        python3 -m pip install "$name" -q &>/dev/null
+    fi
+
+    if [ $? -eq 0 ]; then
+        print_status "$DONE" "$TOTAL" "$name" "ok"
+    else
+        print_status "$DONE" "$TOTAL" "$name" "fail"
         FAILED+=("$name")
     fi
-    sleep 0.3
-}
+    sleep 0.35
+done
 
-# pkg মডিউল
-DONE=$(( DONE + 1 ))
-print_status "${CYAN}${BOLD}[$DONE/$TOTAL] python-psutil (pkg) ইন্সটল হচ্ছে...${RESET}"
-pkg install python-psutil -y &>/dev/null
-if [ $? -eq 0 ]; then
-    print_status "${GREEN}${BOLD}[$DONE/$TOTAL] ✔ python-psutil${RESET}"
-else
-    python3 -m pip install psutil -q &>/dev/null
-    [ $? -eq 0 ] && print_status "${GREEN}${BOLD}[$DONE/$TOTAL] ✔ psutil (pip)${RESET}" \
-                 || { print_status "${RED}${BOLD}[$DONE/$TOTAL] ✗ psutil ব্যর্থ!${RESET}"; FAILED+=("psutil"); }
-fi
-sleep 0.3
-
-# pip মডিউল
-install_mod_pip "requests"
-install_mod_pip "PyJWT"
-install_mod_pip "urllib3"
-install_mod_pip "aiohttp"
-install_mod_pip "flask"
-install_mod_pip "pycryptodome"
-install_mod_pip "protobuf"
-install_mod_pip "google-play-scraper"
-install_mod_pip "pytz"
-install_mod_pip "pyfiglet"
-
-# অ্যানিমেশন বন্ধ
 stop_anim
-sleep 0.2
 
-# ══════════════════════════════════════════════
-# ধাপ ৮: ফাইনাল রিপোর্ট
-# ══════════════════════════════════════════════
+# ============================================================
+# FINAL REPORT
+# ============================================================
 clear
-print_ff 4 0
-line
+print_ff_logo 4 0
+echo ""
+echo -e "${BLUE}${BOLD}  ══════════════════════════════════════════${RESET}"
 if [ ${#FAILED[@]} -gt 0 ]; then
-    warn "নিচের মডিউলগুলো ইন্সটল হয়নি:"
+    echo -e "${YELLOW}${BOLD}  [!] Failed modules:${RESET}"
     for f in "${FAILED[@]}"; do
-        echo -e "  ${RED}  ✗ $f${RESET}"
+        echo -e "  ${RED}      ✗ $f${RESET}"
     done
-    echo ""
-    warn "ইন্টারনেট চেক করে আবার চালান।"
+    echo -e "${YELLOW}${BOLD}  [!] Check internet and retry.${RESET}"
 else
-    echo -e "${GREEN}${BOLD}  🎉 সব মডিউল সফলভাবে ইন্সটল হয়েছে!${RESET}"
+    echo -e "${GREEN}${BOLD}  [✔] All modules installed successfully! 🎉${RESET}"
 fi
-line
+echo -e "${BLUE}${BOLD}  ══════════════════════════════════════════${RESET}"
 echo ""
 
-# ══════════════════════════════════════════════
-# ধাপ ৯: GitHub Repo ক্লোন করে main.py রান
-# ══════════════════════════════════════════════
-
-# ⬇️ এখানে আপনার GitHub repo লিংক বসান
+# ============================================================
+# STEP 9: Clone repo & run main.py
+# ============================================================
 REPO_URL="https://github.com/Ariyan20267/New-update-bot.git"
 REPO_DIR="$HOME/$(basename "$REPO_URL" .git)"
 
-info "GitHub থেকে repo ক্লোন হচ্ছে..."
-info "লিংক: $REPO_URL"
+echo -e "${CYAN}${BOLD}  [*] Cloning repository...${RESET}"
+echo -e "${DIM}  ${REPO_URL}${RESET}"
 echo ""
 
-# আগে থেকে ফোল্ডার থাকলে আপডেট, না থাকলে ক্লোন
 if [ -d "$REPO_DIR/.git" ]; then
-    warn "ফোল্ডার আগে থেকেই আছে, আপডেট করা হচ্ছে..."
+    echo -e "${YELLOW}${BOLD}  [!] Repo exists, pulling latest...${RESET}"
     git -C "$REPO_DIR" pull 2>/dev/null
-    ok "Repo আপডেট সম্পন্ন"
+    echo -e "${GREEN}${BOLD}  [✔] Repo updated${RESET}"
 else
     git clone "$REPO_URL" "$REPO_DIR" 2>/dev/null
     if [ $? -eq 0 ]; then
-        ok "Repo ক্লোন সম্পন্ন: $REPO_DIR"
+        echo -e "${GREEN}${BOLD}  [✔] Repo cloned: $REPO_DIR${RESET}"
     else
-        err "Repo ক্লোন ব্যর্থ! repo লিংক চেক করুন।"
+        echo -e "${RED}${BOLD}  [✗] Clone failed! Check repo URL.${RESET}"
         exit 1
     fi
 fi
 
 echo ""
-
-# main.py খোঁজা
 MAIN_PATH="$REPO_DIR/main.py"
 
 if [ -f "$MAIN_PATH" ]; then
-    ok "main.py পাওয়া গেছে"
+    echo -e "${GREEN}${BOLD}  [✔] main.py found${RESET}"
     echo ""
-    line
-    echo -e "${GREEN}${BOLD}  সব সেটআপ সম্পন্ন! main.py চালু হচ্ছে...${RESET}"
-    line
+    echo -e "${BLUE}${BOLD}  ══════════════════════════════════════════${RESET}"
+    echo -e "${GREEN}${BOLD}  Setup complete! Launching main.py...${RESET}"
+    echo -e "${BLUE}${BOLD}  ══════════════════════════════════════════${RESET}"
     echo ""
     sleep 1
     cd "$REPO_DIR" && python3 main.py
 else
-    err "main.py পাওয়া যায়নি repo-তে!"
-    warn "নিজে চালান: python3 $MAIN_PATH"
+    echo -e "${RED}${BOLD}  [✗] main.py not found in repo!${RESET}"
+    echo -e "${CYAN}  Run manually: python3 $MAIN_PATH${RESET}"
 fi
