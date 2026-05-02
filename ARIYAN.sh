@@ -59,7 +59,7 @@ print_ff_logo() {
     local ri=$(( RANDOM % RGB_LEN ))
     local rc="${RGB[$ri]}"
 
-    echo -e "  ${rc}${BOLD} please wait loading module install.... ${RESET}"
+    echo -e "  ${rc}${BOLD} loading setup ...... ${RESET}"
     echo ""
 
     local lines=("$FF_L0" "$FF_L1" "$FF_L2" "$FF_L3" "$FF_L4" "$FF_L5" "$FF_L6" "$FF_L7" "$FF_L8" "$FF_L9" "$FF_LA" "$FF_LB" "$FF_LC")
@@ -228,48 +228,98 @@ fi
 echo ""
 
 # ============================================================
-# STEP 6-7 — MODULE INSTALL (CLEAN BOX UI)
+# STEP 6-7 — MODULE INSTALL (BOX UI + LOGO LIGHTNING + RGB)
 # ============================================================
-clear
 
-BOX_W=44
+BOX_W=46
+B="${CYAN}${BOLD}"
+RS="${RESET}"
 
-box_line() {
-    echo -e "${CYAN}${BOLD}  ╠$(printf '═%.0s' $(seq 1 $BOX_W))╣${RESET}"
+box_top()  { echo -e "${B}  ╔$(printf '═%.0s' $(seq 1 $BOX_W))╗${RS}"; }
+box_bot()  { echo -e "${B}  ╚$(printf '═%.0s' $(seq 1 $BOX_W))╝${RS}"; }
+box_line() { echo -e "${B}  ╠$(printf '═%.0s' $(seq 1 $BOX_W))╣${RS}"; }
+box_empty(){ printf "${B}  ║${RS}%-${BOX_W}s${B}║${RS}\n" ""; }
+
+box_center() {
+    local text="$1" color="${2:-$WHITE}"
+    local clean; clean=$(echo -e "$text" | sed 's/\x1b\[[0-9;]*m//g')
+    local tlen=${#clean}
+    local lpad=$(( (BOX_W - tlen) / 2 ))
+    local rpad=$(( BOX_W - tlen - lpad ))
+    printf "${B}  ║${RS}%${lpad}s${color}${BOLD}%s${RS}%${rpad}s${B}║${RS}\n" "" "$text" ""
 }
-box_top() {
-    echo -e "${CYAN}${BOLD}  ╔$(printf '═%.0s' $(seq 1 $BOX_W))╗${RESET}"
-}
-box_bot() {
-    echo -e "${CYAN}${BOLD}  ╚$(printf '═%.0s' $(seq 1 $BOX_W))╝${RESET}"
-}
-box_row() {
-    local text="$1"
-    local color="${2:-$WHITE}"
-    # pad to box width
-    local clean
-    clean=$(echo -e "$text" | sed 's/\x1b\[[0-9;]*m//g')
-    local pad=$(( BOX_W - ${#clean} - 1 ))
+
+box_left() {
+    local text="$1" color="${2:-$WHITE}"
+    local clean; clean=$(echo -e "$text" | sed 's/\x1b\[[0-9;]*m//g')
+    local pad=$(( BOX_W - ${#clean} - 2 ))
     [ $pad -lt 0 ] && pad=0
-    printf "  ${CYAN}${BOLD}║${RESET} ${color}${BOLD}%s%*s${RESET}${CYAN}${BOLD}║${RESET}\n" "$text" "$pad" ""
+    printf "${B}  ║${RS} ${color}${BOLD}%s${RS}%${pad}s${B} ║${RS}\n" "$text" ""
 }
 
-# ── TOP: ARIYAN নাম ──
+# ── লোগো লাইন ৭টি (43 char প্রতিটা) ──
+LOGO_LINES=(
+    "░█████╗░██████╗░██╗██╗   ██╗░█████╗░███╗░░██╗"
+    "██╔══██╗██╔══██╗██║╚██╗ ██╔╝██╔══██╗████╗░██║"
+    "███████║██████╔╝██║ ╚████╔╝ ███████║██╔██╗██║"
+    "██╔══██║██╔══██╗██║  ╚██╔╝  ██╔══██║██║╚████║"
+    "██║  ██║██║  ██║██║   ██║   ██║  ██║██║ ╚███║"
+    "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚══╝"
+)
+
+# ── লোগো একবার flash করবে (৩ রঙে) ──
+flash_logo() {
+    local colors=("$RED" "$YELLOW" "$CYAN" "$GREEN" "$ORANGE" "$WHITE")
+    local ci=0
+    for round in 1 2 3; do
+        # উপরে উঠে লোগো আবার আঁকো (৬ লাইন + ২ বক্স লাইন = ৮)
+        printf "\033[8A"
+        box_line
+        for line in "${LOGO_LINES[@]}"; do
+            local c="${colors[$ci]}"
+            ci=$(( (ci + 1) % ${#colors[@]} ))
+            box_center "$line" "$c"
+        done
+        box_line
+        sleep 0.18
+    done
+}
+
+# ── RGB progress bar (বক্সের ভেতরে) ──
+rgb_progress_box() {
+    local done=$1 total=$2
+    local filled=$(( done * (BOX_W - 4) / total ))
+    local empty=$(( BOX_W - 4 - filled ))
+    local bar=""
+    local ci=0
+    for i in $(seq 1 $filled); do
+        ci=$(( (i + done) % RGB_LEN ))
+        bar="${bar}${RGB[$ci]}${BOLD}█${RS}"
+    done
+    for i in $(seq 1 $empty); do
+        bar="${bar}${DIM}░${RS}"
+    done
+    printf "${B}  ║${RS} ${bar} ${B}║${RS}\n"
+}
+
+# ══════════════════ বক্স আঁকা শুরু ══════════════════
+clear
 box_top
-box_row "$(printf '%*s' $(( (BOX_W + 8) / 2 )) '⚡ A R I Y A N  B O T ⚡')" "$YELLOW"
+box_center "⚡  A R I Y A N  B O T  ⚡" "$YELLOW"
+box_center "━━━━━━━━━━━━━━━━━━━━━━━━━━" "$YELLOW"
 box_line
 
-# ── MIDDLE: ASCII লোগো ──
-box_row "░█████╗░██████╗░██╗██╗░░░██╗░█████╗░███╗" "$CYAN"
-box_row "██╔══██╗██╔══██╗██║╚██╗░██╔╝██╔══██╗████╗" "$CYAN"
-box_row "███████║██████╔╝██║░╚████╔╝░███████║██╔██╗" "$CYAN"
-box_row "██╔══██║██╔══██╗██║░░╚██╔╝░░██╔══██║██║╚██" "$CYAN"
-box_row "██║░░██║██║░░██║██║░░░██║░░░██║░░██║██║░╚█" "$CYAN"
-box_row "╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░╚═╝░░╚═╝░░╚═╝╚═╝░╚═" "$CYAN"
+# লোগো প্রথমবার আঁকো
+for line in "${LOGO_LINES[@]}"; do
+    box_center "$line" "$CYAN"
+done
 box_line
 
-# ── INSTALL শুরু ──
-box_row "  📦 Installing Required Modules..." "$YELLOW"
+# লোগো flash animation
+flash_logo
+
+# install header
+box_center "📦  Installing Modules  📦" "$YELLOW"
 box_line
 
 FAILED=()
@@ -295,8 +345,8 @@ for entry in "${MODULES[@]}"; do
     method="${entry##*|}"
     DONE=$(( DONE + 1 ))
 
-    # installing row
-    printf "  ${CYAN}${BOLD}║${RESET} ${YELLOW}${BOLD}  ⏳ %-28s [%2d/%2d]${RESET}  ${CYAN}${BOLD}║${RESET}\n" "$name" "$DONE" "$TOTAL"
+    # ⏳ installing row
+    box_left "  ⏳ ${name}  [${DONE}/${TOTAL}]" "$YELLOW"
 
     if [ "$method" = "pkg" ]; then
         pkg install "python-${name}" -y &>/dev/null || python3 -m pip install "$name" -q &>/dev/null
@@ -305,13 +355,25 @@ for entry in "${MODULES[@]}"; do
     fi
 
     if [ $? -eq 0 ]; then
-        printf "  ${CYAN}${BOLD}║${RESET} ${GREEN}${BOLD}  ✔  %-38s${RESET}${CYAN}${BOLD}║${RESET}\n" "$name OK"
+        # উপর লাইন মুছে ✔ দেখাও
+        printf "\033[1A\033[2K"
+        box_left "  ✔  ${name}" "$GREEN"
     else
-        printf "  ${CYAN}${BOLD}║${RESET} ${RED}${BOLD}  ✗  %-38s${RESET}${CYAN}${BOLD}║${RESET}\n" "$name FAILED"
+        printf "\033[1A\033[2K"
+        box_left "  ✗  ${name} FAILED" "$RED"
         FAILED+=("$name")
     fi
+
+    # RGB progress bar আপডেট
+    rgb_progress_box "$DONE" "$TOTAL"
+    # পরের loop এ bar মুছে আবার আঁকবে
+    printf "\033[1A"
+
 done
 
+# শেষ bar পূর্ণ দেখাও
+echo ""
+rgb_progress_box "$TOTAL" "$TOTAL"
 box_bot
 
 # ============================================================
