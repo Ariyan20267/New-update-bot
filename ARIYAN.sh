@@ -243,29 +243,47 @@ line
 echo ""
 
 # ══════════════════════════════════════════════
-# ধাপ ৯: main.py চালানো
+# ধাপ ৯: GitHub Repo ক্লোন করে main.py রান
 # ══════════════════════════════════════════════
-info "main.py খোঁজা হচ্ছে..."
 
-if   [ -f "main.py" ];                       then MAIN_PATH="main.py"
-elif [ -f "$HOME/main.py" ];                 then MAIN_PATH="$HOME/main.py"
-elif [ -f "$HOME/storage/shared/main.py" ];  then MAIN_PATH="$HOME/storage/shared/main.py"
+# ⬇️ এখানে আপনার GitHub repo লিংক বসান
+REPO_URL="https://github.com/Ariyan20267/New-update-bot.git"
+REPO_DIR="$HOME/$(basename "$REPO_URL" .git)"
+
+info "GitHub থেকে repo ক্লোন হচ্ছে..."
+info "লিংক: $REPO_URL"
+echo ""
+
+# আগে থেকে ফোল্ডার থাকলে আপডেট, না থাকলে ক্লোন
+if [ -d "$REPO_DIR/.git" ]; then
+    warn "ফোল্ডার আগে থেকেই আছে, আপডেট করা হচ্ছে..."
+    git -C "$REPO_DIR" pull 2>/dev/null
+    ok "Repo আপডেট সম্পন্ন"
 else
-    warn "main.py পাওয়া যাচ্ছে না! পাথ দিন (Enter স্কিপ করতে):"
-    read -r MAIN_PATH
+    git clone "$REPO_URL" "$REPO_DIR" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        ok "Repo ক্লোন সম্পন্ন: $REPO_DIR"
+    else
+        err "Repo ক্লোন ব্যর্থ! repo লিংক চেক করুন।"
+        exit 1
+    fi
 fi
 
-if [ -n "$MAIN_PATH" ] && [ -f "$MAIN_PATH" ]; then
-    ok "main.py পাওয়া গেছে: $MAIN_PATH"
+echo ""
+
+# main.py খোঁজা
+MAIN_PATH="$REPO_DIR/main.py"
+
+if [ -f "$MAIN_PATH" ]; then
+    ok "main.py পাওয়া গেছে"
     echo ""
     line
     echo -e "${GREEN}${BOLD}  সব সেটআপ সম্পন্ন! main.py চালু হচ্ছে...${RESET}"
     line
     echo ""
     sleep 1
-    python3 "$MAIN_PATH"
+    cd "$REPO_DIR" && python3 main.py
 else
-    warn "main.py পাওয়া যায়নি। নিজে চালান:"
-    echo -e "${CYAN}  python3 main.py${RESET}"
-    echo ""
+    err "main.py পাওয়া যায়নি repo-তে!"
+    warn "নিজে চালান: python3 $MAIN_PATH"
 fi
