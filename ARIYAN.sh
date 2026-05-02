@@ -59,13 +59,7 @@ print_ff_logo() {
     local ri=$(( RANDOM % RGB_LEN ))
     local rc="${RGB[$ri]}"
 
-    echo -e "  ${rc}${BOLD}
-░█████╗░██████╗░██╗██╗░░░██╗░█████╗░███╗░░██╗
-██╔══██╗██╔══██╗██║╚██╗░██╔╝██╔══██╗████╗░██║
-███████║██████╔╝██║░╚████╔╝░███████║██╔██╗██║
-██╔══██║██╔══██╗██║░░╚██╔╝░░██╔══██║██║╚████║
-██║░░██║██║░░██║██║░░░██║░░░██║░░██║██║░╚███║
-╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝${RESET}"
+    echo -e "  ${rc}${BOLD} please wait loading module install.... ${RESET}"
     echo ""
 
     local lines=("$FF_L0" "$FF_L1" "$FF_L2" "$FF_L3" "$FF_L4" "$FF_L5" "$FF_L6" "$FF_L7" "$FF_L8" "$FF_L9" "$FF_LA" "$FF_LB" "$FF_LC")
@@ -234,15 +228,49 @@ fi
 echo ""
 
 # ============================================================
-# STEP 6-7 — MODULE INSTALL with FF LOGO + RGB PROGRESS
+# STEP 6-7 — MODULE INSTALL (CLEAN BOX UI)
 # ============================================================
 clear
-printf "\033[?25l"
-for i in $(seq 1 $(( STATUS_ROW + 5 ))); do echo ""; done
-printf "\033[H"
 
-start_anim
-sleep 0.5
+BOX_W=44
+
+box_line() {
+    echo -e "${CYAN}${BOLD}  ╠$(printf '═%.0s' $(seq 1 $BOX_W))╣${RESET}"
+}
+box_top() {
+    echo -e "${CYAN}${BOLD}  ╔$(printf '═%.0s' $(seq 1 $BOX_W))╗${RESET}"
+}
+box_bot() {
+    echo -e "${CYAN}${BOLD}  ╚$(printf '═%.0s' $(seq 1 $BOX_W))╝${RESET}"
+}
+box_row() {
+    local text="$1"
+    local color="${2:-$WHITE}"
+    # pad to box width
+    local clean
+    clean=$(echo -e "$text" | sed 's/\x1b\[[0-9;]*m//g')
+    local pad=$(( BOX_W - ${#clean} - 1 ))
+    [ $pad -lt 0 ] && pad=0
+    printf "  ${CYAN}${BOLD}║${RESET} ${color}${BOLD}%s%*s${RESET}${CYAN}${BOLD}║${RESET}\n" "$text" "$pad" ""
+}
+
+# ── TOP: ARIYAN নাম ──
+box_top
+box_row "$(printf '%*s' $(( (BOX_W + 8) / 2 )) '⚡ A R I Y A N  B O T ⚡')" "$YELLOW"
+box_line
+
+# ── MIDDLE: ASCII লোগো ──
+box_row "░█████╗░██████╗░██╗██╗░░░██╗░█████╗░███╗" "$CYAN"
+box_row "██╔══██╗██╔══██╗██║╚██╗░██╔╝██╔══██╗████╗" "$CYAN"
+box_row "███████║██████╔╝██║░╚████╔╝░███████║██╔██╗" "$CYAN"
+box_row "██╔══██║██╔══██╗██║░░╚██╔╝░░██╔══██║██║╚██" "$CYAN"
+box_row "██║░░██║██║░░██║██║░░░██║░░░██║░░██║██║░╚█" "$CYAN"
+box_row "╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░╚═╝░░╚═╝░░╚═╝╚═╝░╚═" "$CYAN"
+box_line
+
+# ── INSTALL শুরু ──
+box_row "  📦 Installing Required Modules..." "$YELLOW"
+box_line
 
 FAILED=()
 MODULES=(
@@ -267,7 +295,8 @@ for entry in "${MODULES[@]}"; do
     method="${entry##*|}"
     DONE=$(( DONE + 1 ))
 
-    print_status "$DONE" "$TOTAL" "$name" "installing"
+    # installing row
+    printf "  ${CYAN}${BOLD}║${RESET} ${YELLOW}${BOLD}  ⏳ %-28s [%2d/%2d]${RESET}  ${CYAN}${BOLD}║${RESET}\n" "$name" "$DONE" "$TOTAL"
 
     if [ "$method" = "pkg" ]; then
         pkg install "python-${name}" -y &>/dev/null || python3 -m pip install "$name" -q &>/dev/null
@@ -276,16 +305,14 @@ for entry in "${MODULES[@]}"; do
     fi
 
     if [ $? -eq 0 ]; then
-        print_status "$DONE" "$TOTAL" "$name" "ok"
+        printf "  ${CYAN}${BOLD}║${RESET} ${GREEN}${BOLD}  ✔  %-38s${RESET}${CYAN}${BOLD}║${RESET}\n" "$name OK"
     else
-        print_status "$DONE" "$TOTAL" "$name" "fail"
+        printf "  ${CYAN}${BOLD}║${RESET} ${RED}${BOLD}  ✗  %-38s${RESET}${CYAN}${BOLD}║${RESET}\n" "$name FAILED"
         FAILED+=("$name")
     fi
-    sleep 0.35
 done
 
-stop_anim
-printf "\033[?25h"
+box_bot
 
 # ============================================================
 # FINAL REPORT
