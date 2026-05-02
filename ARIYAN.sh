@@ -37,7 +37,7 @@ RGB_LEN=15
 FLASH=("$RED" "$ORANGE" "$YELLOW" "$WHITE" "$ORANGE" "$RED" "$YELLOW" "$ORANGE" "$WHITE" "$RED" "$YELLOW" "$ORANGE" "$RED")
 
 # ============================================================
-# FREE FIRE LOGO — direct characters (no \u escapes)
+# FREE FIRE LOGO
 # ============================================================
 FF_L0="            ⣀⣠⡤                        "
 FF_L1="   ⢀⣤⡶⠁⣠⣴⣾⠟⠋⠁                          "
@@ -59,7 +59,13 @@ print_ff_logo() {
     local ri=$(( RANDOM % RGB_LEN ))
     local rc="${RGB[$ri]}"
 
-    echo -e "  ${rc}${BOLD} █████╗ ██████╗ ██╗██╗   ██╗ █████╗ ███╗  ██╗${RESET}"
+    echo -e "  ${rc}${BOLD}
+░█████╗░██████╗░██╗██╗░░░██╗░█████╗░███╗░░██╗
+██╔══██╗██╔══██╗██║╚██╗░██╔╝██╔══██╗████╗░██║
+███████║██████╔╝██║░╚████╔╝░███████║██╔██╗██║
+██╔══██║██╔══██╗██║░░╚██╔╝░░██╔══██║██║╚████║
+██║░░██║██║░░██║██║░░░██║░░░██║░░██║██║░╚███║
+╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝${RESET}"
     echo ""
 
     local lines=("$FF_L0" "$FF_L1" "$FF_L2" "$FF_L3" "$FF_L4" "$FF_L5" "$FF_L6" "$FF_L7" "$FF_L8" "$FF_L9" "$FF_LA" "$FF_LB" "$FF_LC")
@@ -77,7 +83,7 @@ print_ff_logo() {
 }
 
 # ============================================================
-# ANIMATION — TMPDIR safe for Termux
+# ANIMATION
 # ============================================================
 ANIM_PID=""
 FF_FLAG="${TMPDIR:-$HOME}/_ariyan_ff_flag"
@@ -110,7 +116,7 @@ stop_anim() {
 }
 
 # ============================================================
-# RGB PROGRESS BAR + STATUS
+# RGB PROGRESS BAR
 # ============================================================
 rgb_bar() {
     local filled=$1
@@ -151,16 +157,36 @@ print_status() {
 }
 
 # ============================================================
-# STEP 1 — Storage
+# STEP 1 — Storage Permission
 # ============================================================
 clear
 echo -e "${CYAN}${BOLD}  [*] Checking storage permission...${RESET}"
-if [ ! -d ~/storage ]; then
-    echo -e "${YELLOW}${BOLD}  [!] Requesting storage permission...${RESET}"
-    termux-setup-storage
-    sleep 2
+
+STORAGE_OK=0
+
+# চেক করো ফোল্ডার আছে কিনা
+if [ -d ~/storage/shared ] || [ -d ~/storage/downloads ]; then
+    STORAGE_OK=1
 fi
-echo -e "${GREEN}${BOLD}  [✔] Storage OK${RESET}"
+
+# চেক করো আসলেই ফাইল লেখা যায় কিনা
+if [ "$STORAGE_OK" -eq 1 ]; then
+    if ! touch ~/storage/downloads/.test_write 2>/dev/null; then
+        STORAGE_OK=0
+    else
+        rm -f ~/storage/downloads/.test_write 2>/dev/null
+    fi
+fi
+
+if [ "$STORAGE_OK" -eq 0 ]; then
+    echo -e "${YELLOW}${BOLD}  [!] Storage permission not found!${RESET}"
+    echo -e "${YELLOW}${BOLD}  [!] Requesting permission...${RESET}"
+    termux-setup-storage
+    sleep 3
+    echo -e "${GREEN}${BOLD}  [✔] Permission granted!${RESET}"
+else
+    echo -e "${GREEN}${BOLD}  [✔] Storage already permitted, skipping...${RESET}"
+fi
 echo ""
 
 # ============================================================
@@ -228,6 +254,7 @@ MODULES=(
     "flask|pip"
     "pycryptodome|pip"
     "protobuf|pip"
+    "protobuf-decoder|pip"
     "google-play-scraper|pip"
     "pytz|pip"
     "pyfiglet|pip"
