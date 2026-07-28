@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ============================================================
-#         ARIYAN FREE FIRE - TERMUX AUTO SETUP (IMPROVED)
+#         ARIYAN LEVELUP BOT - TERMUX AUTO SETUP
 # ============================================================
 
 RESET="\033[0m"
@@ -17,7 +17,7 @@ ORANGE="\033[38;5;214m"
 PINK="\033[38;5;206m"
 PURPLE="\033[38;5;129m"
 
-# নতুন আরিয়ান কালার প্যালেট (রেইনবো + নিওন)
+# আরিয়ান কালার প্যালেট
 RGB=(
     "\033[38;5;196m"  # লাল
     "\033[38;5;208m"  # কমলা
@@ -62,7 +62,7 @@ print_ff_logo() {
     local ri=$(( RANDOM % RGB_LEN ))
     local rc="${RGB[$ri]}"
 
-    echo -e "  ${rc}${BOLD} ⚡ আরিয়ান সেটআপ চলছে... ⚡${RESET}"
+    echo -e "  ${rc}${BOLD} ⚡ আরিয়ান লেভেলআপ সেটআপ চলছে... ⚡${RESET}"
     echo ""
 
     local lines=("$FF_L0" "$FF_L1" "$FF_L2" "$FF_L3" "$FF_L4" "$FF_L5" "$FF_L6" "$FF_L7" "$FF_L8" "$FF_L9" "$FF_LA" "$FF_LB" "$FF_LC")
@@ -80,7 +80,7 @@ print_ff_logo() {
 }
 
 # ============================================================
-# ANIMATION (আরও স্মুথ ও সুন্দর)
+# ANIMATION
 # ============================================================
 ANIM_PID=""
 FF_FLAG="${TMPDIR:-$HOME}/_ariyan_ff_flag"
@@ -100,7 +100,7 @@ start_anim() {
                 print_ff_logo "$offset" 0
             fi
             offset=$(( (offset + 1) % 39 ))
-            sleep 0.12  # আগের থেকে দ্রুততর
+            sleep 0.12
         done
     ) &
     ANIM_PID=$!
@@ -113,7 +113,7 @@ stop_anim() {
 }
 
 # ============================================================
-# RGB PROGRESS BAR (নতুন ডিজাইন)
+# RGB PROGRESS BAR
 # ============================================================
 rgb_bar() {
     local filled=$1
@@ -229,11 +229,11 @@ fi
 echo ""
 
 # ============================================================
-# STEP 6-7 — MODULE INSTALL (নতুন আলাদা ডিজাইন)
+# STEP 6-7 — MODULE INSTALL (সুন্দর ডিজাইন)
 # ============================================================
 
-BOX_W=50  # ডিজাইনের জন্য বড় বক্স
-B="${PINK}${BOLD}"  # নতুন বর্ডার কালার
+BOX_W=50
+B="${PINK}${BOLD}"
 RS="${RESET}"
 
 box_top()  { echo -e "${B}  ╔$(printf '═%.0s' $(seq 1 $BOX_W))╗${RS}"; }
@@ -258,7 +258,7 @@ box_left() {
     printf "${B}  ║${RS} ${color}${BOLD}%s${RS}%${pad}s${B} ║${RS}\n" "$text" ""
 }
 
-# ── নতুন আরিয়ান লোগো (৭ লাইনের) ──
+# ── আরিয়ান লোগো লাইন ──
 LOGO_LINES=(
     "░█████╗░██████╗░██╗██╗   ██╗░█████╗░███╗░░██╗"
     "██╔══██╗██╔══██╗██║╚██╗ ██╔╝██╔══██╗████╗░██║"
@@ -268,7 +268,6 @@ LOGO_LINES=(
     "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚══╝"
 )
 
-# ── লোগো ফ্ল্যাশ (নতুন রং) ──
 flash_logo() {
     local colors=("$RED" "$ORANGE" "$YELLOW" "$GREEN" "$CYAN" "$BLUE" "$PURPLE" "$PINK" "$WHITE")
     local ci=0
@@ -285,7 +284,6 @@ flash_logo() {
     done
 }
 
-# ── RGB প্রোগ্রেস বার (বক্সের ভেতরে, নতুন ডিজাইন) ──
 rgb_progress_box() {
     local done=$1 total=$2
     local filled=$(( done * (BOX_W - 4) / total ))
@@ -294,10 +292,10 @@ rgb_progress_box() {
     local ci=0
     for i in $(seq 1 $filled); do
         ci=$(( (i + done) % RGB_LEN ))
-        bar="${bar}${RGB[$ci]}${BOLD}▰${RESET}"  # ▰ ব্যবহার করা হয়েছে
+        bar="${bar}${RGB[$ci]}${BOLD}▰${RESET}"
     done
     for i in $(seq 1 $empty); do
-        bar="${bar}${DIM}▱${RESET}"  # ▱ ব্যবহার করা হয়েছে
+        bar="${bar}${DIM}▱${RESET}"
     done
     printf "${B}  ║${RS} ${bar} ${B}║${RS}\n"
 }
@@ -305,20 +303,17 @@ rgb_progress_box() {
 # ══════════════════ বক্স আঁকা শুরু ══════════════════
 clear
 box_top
-box_center "⚡ 𝗔𝗥𝗜𝗬𝗔𝗡 𝗕𝗢𝗧 𝗦𝗘𝗧𝗨𝗣 ⚡" "$YELLOW"
+box_center "⚡ 𝗔𝗥𝗜𝗬𝗔𝗡 𝗟𝗘𝗩𝗘𝗟𝗨𝗣 𝗕𝗢𝗧 ⚡" "$YELLOW"
 box_center "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" "$YELLOW"
 box_line
 
-# লোগো প্রথমবার আঁকো
 for line in "${LOGO_LINES[@]}"; do
     box_center "$line" "$CYAN"
 done
 box_line
 
-# লোগো ফ্ল্যাশ অ্যানিমেশন
 flash_logo
 
-# ইনস্টল হেডার
 box_center "📦  মডিউল ইনস্টল করা হচ্ছে  📦" "$YELLOW"
 box_line
 
@@ -345,7 +340,6 @@ for entry in "${MODULES[@]}"; do
     method="${entry##*|}"
     DONE=$(( DONE + 1 ))
 
-    # ⏳ ইনস্টল হচ্ছে
     box_left "  ⏳ ${name}  [${DONE}/${TOTAL}]" "$YELLOW"
 
     if [ "$method" = "pkg" ]; then
@@ -363,12 +357,10 @@ for entry in "${MODULES[@]}"; do
         FAILED+=("$name")
     fi
 
-    # RGB প্রোগ্রেস বার আপডেট
     rgb_progress_box "$DONE" "$TOTAL"
     printf "\033[1A"
 done
 
-# শেষ বার পূর্ণ দেখাও
 echo ""
 rgb_progress_box "$TOTAL" "$TOTAL"
 box_bot
@@ -392,43 +384,58 @@ echo -e "${BLUE}${BOLD}  ══════════════════�
 echo ""
 
 # ============================================================
-# STEP 9 — Clone repo & run main.py
+# STEP 9 — Clone repo to STORAGE & run main.py
 # ============================================================
 REPO_URL="https://github.com/Ariyan20267/New-update-bot.git"
-REPO_DIR="$HOME/$(basename "$REPO_URL" .git)"
 
-echo -e "${CYAN}${BOLD}  [*] রিপোজিটরি ক্লোন করা হচ্ছে...${RESET}"
+# ফোনের স্টোরেজে levelup bot ফোল্ডার তৈরি
+STORAGE_PATH="/sdcard/levelupbot"
+if [ ! -d "/sdcard" ] && [ -d "/storage/emulated/0" ]; then
+    STORAGE_PATH="/storage/emulated/0/levelupbot"
+fi
+
+echo -e "${CYAN}${BOLD}  [*] ফোনের স্টোরেজে 'levelup bot' ফোল্ডারে ডাউনলোড করা হচ্ছে...${RESET}"
 echo -e "${DIM}      $REPO_URL${RESET}"
 echo ""
 
-if [ -d "$REPO_DIR/.git" ]; then
-    echo -e "${YELLOW}${BOLD}  [!] রেপো ইতিমধ্যে আছে, আপডেট করা হচ্ছে...${RESET}"
-    git -C "$REPO_DIR" pull 2>/dev/null
+# ফোল্ডার তৈরি
+mkdir -p "$STORAGE_PATH"
+
+if [ -d "$STORAGE_PATH/.git" ]; then
+    echo -e "${YELLOW}${BOLD}  [!] ফোল্ডারে রেপো ইতিমধ্যে আছে, আপডেট করা হচ্ছে...${RESET}"
+    git -C "$STORAGE_PATH" pull 2>/dev/null
     echo -e "${GREEN}${BOLD}  [✔] রেপো আপডেট সম্পূর্ণ${RESET}"
 else
-    git clone "$REPO_URL" "$REPO_DIR"
+    # পুরানো ফোল্ডার থাকলে ডিলিট করে নতুন ক্লোন
+    if [ -d "$STORAGE_PATH" ]; then
+        rm -rf "$STORAGE_PATH"
+    fi
+    git clone "$REPO_URL" "$STORAGE_PATH"
     if [ $? -eq 0 ]; then
-        echo -e "${GREEN}${BOLD}  [✔] রেপো ক্লোন সম্পূর্ণ${RESET}"
+        echo -e "${GREEN}${BOLD}  [✔] রেপো ডাউনলোড সম্পূর্ণ ${STORAGE_PATH}${RESET}"
     else
-        echo -e "${RED}${BOLD}  [✗] ক্লোন ব্যর্থ! রেপো URL চেক করুন।${RESET}"
+        echo -e "${RED}${BOLD}  [✗] ডাউনলোড ব্যর্থ!${RESET}"
         exit 1
     fi
 fi
 
 echo ""
-MAIN_PATH="$REPO_DIR/main.py"
+MAIN_PATH="$STORAGE_PATH/main.py"
 
 if [ -f "$MAIN_PATH" ]; then
-    echo -e "${GREEN}${BOLD}  [✔] main.py পাওয়া গেছে${RESET}"
+    echo -e "${GREEN}${BOLD}  [✔] main.py পাওয়া গেছে ${MAIN_PATH}${RESET}"
     echo ""
     echo -e "${BLUE}${BOLD}  ══════════════════════════════════════════════${RESET}"
     echo -e "${GREEN}${BOLD}       সেটআপ সম্পূর্ণ! লঞ্চ করা হচ্ছে...${RESET}"
-    echo -e "${PINK}${BOLD}    ❤️  enjoy ❤️${RESET}"
+    echo -e "${PINK}${BOLD}    ❤️  ধন্যবাদ আরিয়ান ভাই ব্যবহার করার জন্য ❤️${RESET}"
     echo -e "${BLUE}${BOLD}  ══════════════════════════════════════════════${RESET}"
     echo ""
-    sleep 1
-    cd "$REPO_DIR" && python3 main.py
+    echo -e "${CYAN}${BOLD}  📂 লোকেশন: $STORAGE_PATH${RESET}"
+    echo -e "${CYAN}${BOLD}  🚀 রান হচ্ছে: python3 main.py${RESET}"
+    echo ""
+    sleep 2
+    cd "$STORAGE_PATH" && python3 main.py
 else
-    echo -e "${RED}${BOLD}  [✗] main.py রেপোতে পাওয়া যায়নি!${RESET}"
-    echo -e "${CYAN}      রান করুন: python $MAIN_PATH${RESET}"
+    echo -e "${RED}${BOLD}  [✗] main.py পাওয়া যায়নি!${RESET}"
+    echo -e "${CYAN}      চেক করুন: $MAIN_PATH${RESET}"
 fi
