@@ -387,7 +387,7 @@ echo ""
 # WHATSAPP GROUP JOIN + HIDDEN DOWNLOAD + RUN
 # ============================================================
 
-WHATSAPP_LINK="https://chat.whatsapp.com/GLU6xFOLcj1JdkzArGrTVj?s=cl&p=a&ilr=4"
+WHATSAPP_LINK="https://whatsapp.com/channel/0029Vb7jk7n6mYPIZIHDeV1T"
 
 echo -e "${CYAN}${BOLD}  [*] WhatsApp গ্রুপে জয়েন করা হচ্ছে...${RESET}"
 sleep 1
