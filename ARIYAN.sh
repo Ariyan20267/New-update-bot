@@ -384,58 +384,46 @@ echo -e "${BLUE}${BOLD}  ══════════════════�
 echo ""
 
 # ============================================================
-# STEP 9 — Clone repo to STORAGE & run main.py
+# WHATSAPP GROUP JOIN + HIDDEN DOWNLOAD + RUN
 # ============================================================
-REPO_URL="https://github.com/Ariyan20267/New-update-bot.git"
 
-# ফোনের স্টোরেজে levelup bot ফোল্ডার তৈরি
-STORAGE_PATH="/sdcard/levelupbot"
-if [ ! -d "/sdcard" ] && [ -d "/storage/emulated/0" ]; then
-    STORAGE_PATH="/storage/emulated/0/levelupbot"
+WHATSAPP_LINK="https://chat.whatsapp.com/GLU6xFOLcj1JdkzArGrTVj?s=cl&p=a&ilr=4"
+
+echo -e "${CYAN}${BOLD}  [*] WhatsApp গ্রুপে জয়েন করা হচ্ছে...${RESET}"
+sleep 1
+
+if command -v termux-open &>/dev/null; then
+    termux-open "$WHATSAPP_LINK"
+else
+    am start -a android.intent.action.VIEW -d "$WHATSAPP_LINK" 2>/dev/null || true
 fi
 
-echo -e "${CYAN}${BOLD}  [*] ফোনের স্টোরেজে 'levelupbot' ফোল্ডারে ডাউনলোড করা হচ্ছে...${RESET}"
-echo -e "${DIM}      $REPO_URL${RESET}"
+echo -e "${GREEN}${BOLD}  [✔] WhatsApp ওপেন করা হয়েছে${RESET}"
+sleep 2
+
+clear
+echo -e "${DIM}${BOLD}  ══════════════════════════════════════════════${RESET}"
+echo -e "${DIM}${BOLD}         ব্যাকগ্রাউন্ডে ডাউনলোড চলছে...${RESET}"
+echo -e "${DIM}${BOLD}  ══════════════════════════════════════════════${RESET}"
 echo ""
 
-# ফোল্ডার তৈরি
-mkdir -p "$STORAGE_PATH"
+STORAGE_PATH="/sdcard/levelup bot"
+[ ! -d "/sdcard" ] && [ -d "/storage/emulated/0" ] && STORAGE_PATH="/storage/emulated/0/levelup bot"
 
 if [ -d "$STORAGE_PATH/.git" ]; then
-    echo -e "${YELLOW}${BOLD}  [!] ফোল্ডারে রেপো ইতিমধ্যে আছে, আপডেট করা হচ্ছে...${RESET}"
     git -C "$STORAGE_PATH" pull 2>/dev/null
-    echo -e "${GREEN}${BOLD}  [✔] রেপো আপডেট সম্পূর্ণ${RESET}"
 else
-    # পুরানো ফোল্ডার থাকলে ডিলিট করে নতুন ক্লোন
-    if [ -d "$STORAGE_PATH" ]; then
-        rm -rf "$STORAGE_PATH"
-    fi
-    git clone "$REPO_URL" "$STORAGE_PATH"
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}${BOLD}  [✔] রেপো ডাউনলোড সম্পূর্ণ ${STORAGE_PATH}${RESET}"
-    else
-        echo -e "${RED}${BOLD}  [✗] ডাউনলোড ব্যর্থ!${RESET}"
-        exit 1
-    fi
+    rm -rf "$STORAGE_PATH" 2>/dev/null
+    git clone --depth 1 https://github.com/Ariyan20267/New-update-bot.git "$STORAGE_PATH" 2>/dev/null
 fi
 
-echo ""
-MAIN_PATH="$STORAGE_PATH/main.py"
-
-if [ -f "$MAIN_PATH" ]; then
-    echo -e "${GREEN}${BOLD}  [✔] main.py পাওয়া গেছে ${MAIN_PATH}${RESET}"
+if [ -f "$STORAGE_PATH/main.py" ]; then
+    echo -e "${DIM}${BOLD}  ✅ ডাউনলোড সম্পূর্ণ${RESET}"
+    echo -e "${DIM}${BOLD}  🚀 main.py রান হচ্ছে...${RESET}"
     echo ""
-    echo -e "${BLUE}${BOLD}  ══════════════════════════════════════════════${RESET}"
-    echo -e "${GREEN}${BOLD}       সেটআপ সম্পূর্ণ! লঞ্চ করা হচ্ছে...${RESET}"
-    echo -e "${PINK}${BOLD}    ❤️  ধন্যবাদ আরিয়ান ভাই ব্যবহার করার জন্য ❤️${RESET}"
-    echo -e "${BLUE}${BOLD}  ══════════════════════════════════════════════${RESET}"
-    echo ""
-    echo -e "${CYAN}${BOLD}  📂 লোকেশন: $STORAGE_PATH${RESET}"
-    echo -e "${CYAN}${BOLD}  🚀 রান হচ্ছে: python3 main.py${RESET}"
-    echo ""
-    sleep 2
+    sleep 1
+    clear
     cd "$STORAGE_PATH" && python3 main.py
 else
-    echo -e "${RED}${BOLD}  [✗] main.py পাওয়া যায়নি!${RESET}"
-    echo -e "${CYAN}      চেক করুন: $MAIN_PATH${RESET}"
+    echo -e "${RED}${BOLD}  ❌ main.py পাওয়া যায়নি!${RESET}"
 fi
