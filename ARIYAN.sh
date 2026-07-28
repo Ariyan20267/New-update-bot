@@ -394,7 +394,7 @@ if [ ! -d "/sdcard" ] && [ -d "/storage/emulated/0" ]; then
     STORAGE_PATH="/storage/emulated/0/levelupbot"
 fi
 
-echo -e "${CYAN}${BOLD}  [*] ফোনের স্টোরেজে 'levelup bot' ফোল্ডারে ডাউনলোড করা হচ্ছে...${RESET}"
+echo -e "${CYAN}${BOLD}  [*] ফোনের স্টোরেজে 'levelupbot' ফোল্ডারে ডাউনলোড করা হচ্ছে...${RESET}"
 echo -e "${DIM}      $REPO_URL${RESET}"
 echo ""
 
